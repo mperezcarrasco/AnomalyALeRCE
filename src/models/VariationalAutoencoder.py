@@ -57,6 +57,7 @@ class vae(nn.Module):
         """
         Compute Evidence Lower Bound (ELBO) for the variational autoencoder.
         """
+        #TODO: for a couple of forward passes.
         mu, log_var, _, x_hat = self.forward(x)
         rec = F.mse_loss(x_hat, x, reduction='mean')
         kl_div = - 0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp()) 

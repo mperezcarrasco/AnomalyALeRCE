@@ -22,16 +22,22 @@ def train(args, writer, dataloader_train, dataloader_val):
     losses = AverageMeter()
     for epoch in range(args.epochs):
         print('Epoch: {}/{}'.format(epoch, args.epochs))
-        for x, _, _ in dataloader_train:
+        for _, x, _ , _ in dataloader_train:
             model.train()
             x = x.float().to(args.device)
 
             loss, metric = model.compute_loss(x)
+
+            #Computing gradients
             loss.backward()
+            optimizer.step()
+
+            #Zero grading for next iteration.
             optimizer.zero_grad()
+
             losses.update(metric, x.size(0))
         
-        print('Training Loss: {:.2f}'.format(losses.avg))
+        print('Training Loss: {:.3f}'.format(losses.avg))
         losses_v = evaluate(args, model, dataloader_val)
         stop, is_best = es.count(losses_v, model)
 
@@ -47,12 +53,12 @@ def evaluate(args, model, dataloader):
     model.eval()
     losses = AverageMeter()
     with torch.no_grad():
-        for x, _, _ in dataloader:
+        for _, x, _, _ in dataloader:
             x = x.float().to(args.device)
 
             _, metric = model.compute_loss(x)
             losses.update(metric, x.size(0))
-    print('Test Loss: {:.2f}'.format(losses.avg))
+    print('Val Loss: {:.3f}'.format(losses.avg))
     return losses.avg
 
 
