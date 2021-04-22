@@ -1,2 +1,2 @@
 # AnomalyALeRCE
-Anomaly Detector for ALeRCE broker 🤖
+Anomaly Detector for ALeRCE broker 🤖🌟
