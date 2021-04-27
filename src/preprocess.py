@@ -27,7 +27,7 @@ def weighted_sampler(data, class_):
     return sampler
 
 def define_outlier_classes(args, data):
-    #Define the type1 (bad) and type2 (outlier) classes.
+    #Define the type1 (wrong classified) and type2 (real unseen outlier) classes.
     outClasses = np.where((data['hierClass']==data['hierPredtmp']) & (data['classALeRCE']!= args.outlier), 0, data['classALeRCE']) #Inlier:0
     outClasses = np.where(data['hierClass']!=data['hierPredtmp'], 1, outClasses) #Type1:1
     outClasses = np.where(data['classALeRCE']==args.outlier, 2, outClasses) #Type2:2
@@ -97,7 +97,7 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
         test['hierPredtmp'] = test['hierPred']
 
     #Remove the outlier from training set and append to the test set.
-    test = pd.concat([test, train[train.classALeRCE==args.outlier]])
+    test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
     train = train[train.classALeRCE!=args.outlier]
 
     #Defining validation set.
