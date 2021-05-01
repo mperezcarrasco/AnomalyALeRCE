@@ -28,7 +28,7 @@ def weighted_sampler(data, class_):
 
 def define_outlier_classes(args, data):
     #Define the type1 (wrong classified) and type2 (real unseen outlier) classes.
-    outClasses = np.where((data['hierClass']==data['hierPredtmp']) & (data['classALeRCE']!= args.outlier), 0, data['classALeRCE']) #Inlier:0
+    outClasses = np.where((data['classALeRCE']!= args.outlier), 0, data['classALeRCE']) #Inlier:0
     outClasses = np.where(data['hierClass']!=data['hierPredtmp'], 1, outClasses) #Type1:1
     outClasses = np.where(data['classALeRCE']==args.outlier, 2, outClasses) #Type2:2
     return outClasses
