@@ -57,6 +57,7 @@ def filter_features(features):
 
     ref: Alert Classification for the ALeRCE Broker System: The Light Curve Classifier (https://arxiv.org/abs/2008.03311)
     """
+    features = features.astype('float32')
     features = features[(features['n_det_1']>=6) | (features['n_det_2']>=6)]
     return features.replace([np.inf, -np.inf], np.nan)
 

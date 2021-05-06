@@ -1,0 +1,4 @@
+pandas
+numpy
+cython
+pyarrow==0.15.1

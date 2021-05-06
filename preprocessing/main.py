@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # TRAINING PAREMETERS
     parser.add_argument('--labels_file', default='../data_raw/dfcrossmatches_prioritized_v7.0.1.csv', type=str,
                         help='Labels filename.')
-    parser.add_argument('--features_file', default='../data_raw/features_20210106.parquet', type=str,
+    parser.add_argument('--features_file', default='../data_raw/features_26042021.parquet', type=str,
                         help='Features filename.')
     parser.add_argument('--features_list', default='../data_raw/features_RF_model.pkl', type=str,
                         help='Feature list (contains the features to be used for experiments.)')
@@ -25,9 +25,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     features = pd.read_parquet(args.features_file, engine='pyarrow')
-    labels = pd.read_csv(args.labels_file,index_col='oid').reset_index()
+    labels = pd.read_csv(args.labels_file)
     feature_list = pd.read_pickle(args.features_list)
-
 
     # Map labels to ALeRCE's Taxonomy (incluiding hierarchical) and remove some bad oids.
     labels = map_labels(labels)
@@ -54,9 +53,8 @@ if __name__ == '__main__':
 
     if args.train_late:
         model = train_bhrf(args, train, feature_list, save=True)
-
-        unlabeled = features[~features['oid'].isin(train.oid)] #removing training set from unlabeled data
-        x = unlabeled.set_index('oid')[feature_list].astype('float32')
+        unlabeled = features[~features.index.isin(train.oid)] #removing training set from unlabeled data
+        x = unlabeled[feature_list].astype('float32')
         x = x.replace([np.inf, -np.inf], np.nan)
         x = x.fillna(-999)
 

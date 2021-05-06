@@ -75,9 +75,9 @@ if __name__ == '__main__':
                         help='Number of epochs')
     parser.add_argument('--model', default='ae', type=str,
                         help='Model architecture.', choices=['ae', 'vae', 'vade'])
-    parser.add_argument('--patience', default=150, type=int,
+    parser.add_argument('--patience', default=200, type=int,
                         help='Patience for early stopping.')
-    parser.add_argument("--outlier", type=str, default='Bogus',
+    parser.add_argument("--outlier", type=str, default='none',
                         help="Class to be used as outlier.")
     parser.add_argument("--hierClass", type=str, default='Transient',
                         help="Hierarchical class.")
@@ -94,8 +94,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    if args.outlier!='none':
+        job_name = '{}_{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.lr, args.z_dim, args.fold)
+    else:
+        job_name = '{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.lr, args.z_dim, args.fold)
 
-    job_name = '{}_{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.lr, args.z_dim, args.fold)
     args.directory = os.path.join(args.r, job_name)
 
     # create dir to store the results.
