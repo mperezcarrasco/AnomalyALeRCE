@@ -89,7 +89,7 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
     train = train[train.hierClass==args.hierClass]
     train['hierPredtmp'] = train['hierClass']
 
-    if args.outlier!='Bogus':
+    if args.outlier!='none':
         test = test[test['hierPred_without_{}'.format(args.outlier)]==args.hierClass]
         test['hierPredtmp'] = test['hierPred_without_{}'.format(args.outlier)]
     else:
