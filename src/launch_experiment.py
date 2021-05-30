@@ -5,17 +5,18 @@ from subprocess import check_call
 
 PYTHON = sys.executable
 
-def launch_job(model, latent_dim, lr, hierClass, fold):
+def launch_job(model, latent_dim, lr, hierClass, fold, outlier):
     """
     Function to launch the experimets.
     """
     cmd = "{} main.py --model {} --z_dim {} --lr {} \
-              --hierClass {} --fold {}".format(PYTHON,
+              --hierClass {} --fold {} --outlier {}".format(PYTHON,
                                                model,
                                                latent_dim,
                                                lr,
                                                hierClass,
-                                               fold)
+                                               fold,
+                                               outlier)
     print(cmd)
     check_call(cmd, shell=True)
 
@@ -46,9 +47,6 @@ if __name__ == "__main__":
                              'RRL',
                              'LPV']
 
-    latent_dims = [32, 64, 128]
-    lrs = [0.005, 0.001, 0.0005, 0.0001]
-    fold = 0
-    for latent_dim in latent_dims:
-        for lr in lrs:
-            launch_job(args.model, latent_dim, lr, args.hierClass, fold)
+    for outlier in possible_outliers:
+        for fold in range(5):
+            launch_job(args.model, args.latent_dim, args.lr, args.hierClass, fold, outlier)
