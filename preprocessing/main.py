@@ -62,6 +62,7 @@ if __name__ == '__main__':
         unlabeled['Periodic'] = probas[:,0]
         unlabeled['Stochastic'] = probas[:,1]
         unlabeled['Transient'] = probas[:,2]
+        test['hierPred'] = model.predict(test[feature_list].fillna(-999))
         unlabeled.to_pickle('../data/unlabeled_dataset_preds.pkl')
         pass
 
@@ -80,7 +81,7 @@ if __name__ == '__main__':
                         'CV/Nova',
                         'QSO',
                         'YSO']
-
+    
     test['hierPred'] = model.predict(test[feature_list].fillna(-999))
     temp_test = test[feature_list]
     for outlier in possible_outliers:
