@@ -94,7 +94,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    
+
     if args.outlier!='none':
         job_name = '{}_{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.lr, args.z_dim, args.fold)
     else:

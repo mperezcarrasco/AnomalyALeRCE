@@ -53,4 +53,4 @@ if __name__ == "__main__":
 
     for outlier in possible_outliers:
         for fold in range(5):
-            launch_job(args.model, args.latent_dim, args.lr, args.hierClass, fold, outlier)
+            launch_job(args.model, args.z_dim, args.lr, args.hierClass, fold, outlier)
