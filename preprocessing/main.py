@@ -12,9 +12,9 @@ from late import train_bhrf
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # TRAINING PAREMETERS
-    parser.add_argument('--labels_file', default='../data_raw/dfcrossmatches_prioritized_v7.0.1.csv', type=str,
+    parser.add_argument('--labels_file', default='../data_raw/dfcrossmatches_ZTF_prioritized_v8.0.1.csv', type=str,
                         help='Labels filename.')
-    parser.add_argument('--features_file', default='../data_raw/features_26042021.parquet', type=str,
+    parser.add_argument('--features_file', default='../data_raw/features_ZTF_prioritized_v8.0.1_pivot_wisematch.parquet', type=str,
                         help='Features filename.')
     parser.add_argument('--features_list', default='../data_raw/features_RF_model.pkl', type=str,
                         help='Feature list (contains the features to be used for experiments.)')
