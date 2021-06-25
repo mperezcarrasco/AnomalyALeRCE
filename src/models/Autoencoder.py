@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from utils.utils import AverageMeter
+
 
 class ae(nn.Module):
     """Pytorch implementation of an autoencoder based on MLP."""
@@ -28,7 +30,6 @@ class ae(nn.Module):
         self.decbn3 = nn.BatchNorm1d(512)
         self.dec4 = nn.Linear(512, args.in_dim)
 
-
     def encode(self, x):
         h = F.leaky_relu(self.encbn1(self.enc1(x)))
         h = F.leaky_relu(self.encbn2(self.enc2(h)))
@@ -47,10 +48,23 @@ class ae(nn.Module):
         x_hat = self.decode(z)
         return z, x_hat
 
+    def set_metrics(self):
+        # DEFINING METRICS
+        self.rec = AverageMeter()
+
     def compute_loss(self, x):
         """
-        Compute MSE and Binary Cross-Entropy Losses.
+        Compute MSE Loss.
         """
         _, x_hat = self.forward(x)
-        rec = F.mse_loss(x_hat, x, reduction='mean')
-        return rec, rec.item()
+        self.loss = F.mse_loss(x_hat, x, reduction='mean')
+        return self.loss
+
+    def compute_metrics(self, x):
+        """
+        Compute metrics (only reconstruction for AE).
+        """
+        self.rec.update(self.loss.item(), x.size(0))
+        metrics = {'Loss': self.rec.avg,
+                   'Reconstruction': self.rec.avg}
+        return metrics
