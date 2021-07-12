@@ -62,4 +62,8 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-
+def print_and_log(metrics, writer, epoch, mode):
+    for metric, value in metrics.items():
+        print("{}: {:.3f}".format(metric, value))
+        writer.add_scalar('{}_{}'.format(metric, mode), value, epoch)
+    return metrics

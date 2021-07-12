@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from utils.utils import AverageMeter
+
 
 class vae(nn.Module):
     """Pytorch implementation of a variational autoencoder based on MLP."""
@@ -53,12 +55,32 @@ class vae(nn.Module):
         x_hat = self.decode(z)
         return mu, log_var, z, x_hat
 
+    def set_metrics(self):
+        # DEFINING METRICS
+        self.loss_m = AverageMeter()
+        self.rec_m = AverageMeter()
+        self.dkl_m = AverageMeter()
+
     def compute_loss(self, x):
         """
         Compute Evidence Lower Bound (ELBO) for the variational autoencoder.
         """
         #TODO: for a couple of forward passes.
         mu, log_var, _, x_hat = self.forward(x)
-        rec = F.mse_loss(x_hat, x, reduction='mean')
-        kl_div = - 0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp()) 
-        return rec + kl_div, rec.item()
+        self.rec = F.mse_loss(x_hat, x, reduction='mean')
+        self.dkl = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 \
+                                               - log_var.exp(), dim = 1), dim = 0)
+        self.loss = self.rec + self.dkl
+        return self.loss
+
+    def compute_metrics(self, x):
+        """
+        Compute metrics (only reconstruction for AE).
+        """
+        self.loss_m.update(self.loss.item(), x.size(0))
+        self.rec_m.update(self.rec.item(), x.size(0))
+        self.dkl_m.update(self.dkl.item(), x.size(0))
+        metrics = {'Loss': self.loss_m.avg,
+                   'Reconstruction': self.rec_m.avg,
+                   'Divergence': self.dkl_m.avg}
+        return metrics

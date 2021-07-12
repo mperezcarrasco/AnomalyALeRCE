@@ -4,7 +4,7 @@ import os
 
 from preprocess import get_data
 from models.main import build_network
-from utils.utils import weights_init_normal, EarlyStopping, AverageMeter, save_metrics
+from utils.utils import weights_init_normal, EarlyStopping, AverageMeter, save_metrics, print_and_log
 
 from torch.utils.tensorboard import SummaryWriter
 from torch import optim
@@ -19,14 +19,15 @@ def train(args, writer, dataloader_train, dataloader_val):
 
     #Setting the early stopping.
     es = EarlyStopping(args)
-    losses = AverageMeter()
     for epoch in range(args.epochs):
+        model.set_metrics()
         print('Epoch: {}/{}'.format(epoch, args.epochs))
         for _, x, _ , _ in dataloader_train:
             model.train()
             x = x.float().to(args.device)
 
-            loss, metric = model.compute_loss(x)
+            loss = model.compute_loss(x)
+            metrics = model.compute_metrics(x)
 
             #Computing gradients
             loss.backward()
@@ -35,14 +36,13 @@ def train(args, writer, dataloader_train, dataloader_val):
             #Zero grading for next iteration.
             optimizer.zero_grad()
 
-            losses.update(metric, x.size(0))
-        
-        print('Training Loss: {:.3f}'.format(losses.avg))
-        losses_v = evaluate(args, model, dataloader_val)
+        print('Training Metrics...')
+        print_and_log(metrics, writer, epoch, 'train')
+        losses_v, metrics_v = evaluate(args, model, dataloader_val)
+        print_and_log(metrics_v, writer, epoch, 'val')
+        print("##########################################")
         stop, is_best = es.count(losses_v, model)
 
-        writer.add_scalar('loss_train', losses.avg, epoch)
-        writer.add_scalar('loss_val', losses_v, epoch)
         if is_best:
             save_metrics(losses_v, args.directory, mode='val')
         if stop:
@@ -51,15 +51,17 @@ def train(args, writer, dataloader_train, dataloader_val):
 def evaluate(args, model, dataloader):
     """Evalute the unsupervised model."""
     model.eval()
+    model.set_metrics()
     losses = AverageMeter()
     with torch.no_grad():
         for _, x, _, _ in dataloader:
             x = x.float().to(args.device)
 
-            _, metric = model.compute_loss(x)
-            losses.update(metric, x.size(0))
-    print('Val Loss: {:.3f}'.format(losses.avg))
-    return losses.avg
+            loss = model.compute_loss(x)
+            metrics = model.update_metrics(x)
+
+            losses.update(loss.item(), x.size(0))
+    return losses, metrics
 
 
 if __name__ == '__main__':
@@ -110,4 +112,3 @@ if __name__ == '__main__':
 
     dataloader_train, dataloader_val, dataloader_test = get_data(args)
     train(args, writer, dataloader_train, dataloader_val)
-

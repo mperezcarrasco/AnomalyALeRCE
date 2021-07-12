@@ -83,7 +83,7 @@ class vade(nn.Module):
         kl_div_c = (log_q_c_given_x - log_p_c)/x.size(0)
         
         loss = rec + kl_div_z + kl_div_c
-        return loss, rec.item()
+        return loss
     
     def compute_pcz(self, z, p_c):
         covs = self.VaDE.log_var_prior.exp()
