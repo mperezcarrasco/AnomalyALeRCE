@@ -1,20 +1,12 @@
 import torch
 from torch.utils.data import DataLoader
 
+from utils.normalize import HandcraftedFeaturePreprocessor
 import pandas as pd
 import numpy as np
 
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.model_selection import train_test_split
-
-
-def normalize(features):
-    # Normalizing data using quntile transformer.
-    scaler = QuantileTransformer(n_quantiles=1000)
-    scaler.fit(features)
-    features = scaler.transform(features)
-    features[np.isnan(features)] = 0 #NaN to 0.
-    return features.astype('float32')
 
 def weighted_sampler(data, class_):
     #Define weighter sampler for balanced batches processing.
@@ -52,7 +44,8 @@ class ALeRCE(object):
             ids (list): List of ids associated to each gene.
         """
         #Features to be in [0,1] range.
-        self.features = normalize(data[feature_list])
+        feature_preprocessor = HandcraftedFeaturePreprocessor()
+        self.features = feature_preprocessor.preprocess(data[feature_list]).values
         self.oid = data.oid.values  
         self.classALeRCE = map2numerical(data['classALeRCE'])
         self.classOut = define_outlier_classes(args, data)
