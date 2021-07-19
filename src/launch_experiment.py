@@ -32,7 +32,7 @@ if __name__ == "__main__":
     parser.add_argument('--z_dim', default=32, type=int,
                         help='Latent space dimensionality')
     args = parser.parse_args()
-
+    
     if args.hierClass=='Transient':
         possible_outliers = ['SLSN',
                              'SNII',
@@ -50,7 +50,11 @@ if __name__ == "__main__":
                              'E',
                              'RRL',
                              'LPV']
-
+    
+    #outlier = 'none'
+    #lrs = [0.0005, 0.0001]
+    #z_dims = [32, 84, 128]
+    
     for outlier in possible_outliers:
         for fold in range(5):
             launch_job(args.model, args.z_dim, args.lr, args.hierClass, fold, outlier)

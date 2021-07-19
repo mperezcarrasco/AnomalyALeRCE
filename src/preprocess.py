@@ -89,11 +89,11 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
         test = test[test['hierPred']==args.hierClass]
         test['hierPredtmp'] = test['hierPred']
 
-    #Remove the outlier from training set and append to the test set.
+    #Remove the outlier from training set and append it to the test set.
     test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
     train = train[train.classALeRCE!=args.outlier]
 
-    #Defining validation set.
+    #Validation set.
     fold_ixs = pd.read_pickle('{}/fold_{}_ixs.pkl'.format(args.data_pth, args.fold))
     val = train[(train.index.isin(fold_ixs)==False)]
     train = train[(train.index.isin(fold_ixs))]

@@ -31,7 +31,7 @@ feature_scales = {
     'MedianAbsDev': [1e-2, 1.0],  # Usar log sobre medianabsdev
     'MedianBRP': [0.0, 0.85],
     'Multiband_period': [5e-2, 1e3],  # Usar log sobre multiband_period
-    'PPE': [0.0, 0.25],
+    'Period_fit': [0.0, 0.25],
     'delta_period': [3e-8, 5.0],  # clipear y Usar log sobre delta_period
     'PairSlopeTrend': [-0.3, 0.4],
     'PercentAmplitude': [0.0, 0.2],

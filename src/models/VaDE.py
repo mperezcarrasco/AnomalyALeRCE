@@ -44,7 +44,7 @@ class vade(nn.Module):
         h = F.leaky_relu(self.decbn1(self.dec1(x)))
         h = F.leaky_relu(self.decbn2(self.dec2(h)))
         h = F.leaky_relu(self.decbn3(self.dec3(h)))
-        return torch.sigmoid(self.dec4(h))
+        return torch.tanh(self.dec4(h))
     
     def reparameterize(self, mu, log_var):
         std = torch.exp(log_var/2)

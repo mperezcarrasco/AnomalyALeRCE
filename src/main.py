@@ -39,12 +39,13 @@ def train(args, writer, dataloader_train, dataloader_val):
         print('Training Metrics...')
         print_and_log(metrics, writer, epoch, 'train')
         losses_v, metrics_v = evaluate(args, model, dataloader_val)
+        print('Validation Metrics...')
         print_and_log(metrics_v, writer, epoch, 'val')
         print("##########################################")
-        stop, is_best = es.count(losses_v, model)
+        stop, is_best = es.count(losses_v.avg, model)
 
         if is_best:
-            save_metrics(losses_v, args.directory, mode='val')
+            save_metrics(losses_v.avg, args.directory, mode='val')
         if stop:
             break
 
@@ -58,7 +59,7 @@ def evaluate(args, model, dataloader):
             x = x.float().to(args.device)
 
             loss = model.compute_loss(x)
-            metrics = model.update_metrics(x)
+            metrics = model.compute_metrics(x)
 
             losses.update(loss.item(), x.size(0))
     return losses, metrics
@@ -71,13 +72,13 @@ if __name__ == '__main__':
                         help='Dataset directory path.')
     parser.add_argument('--r', default="./experiments", type=str,
                         help='Results path. Weights and metrics will be stored here.')
-    parser.add_argument('--batch_size', default=128, type=int,
+    parser.add_argument('--batch_size', default=1024, type=int,
                         help='batch size')
     parser.add_argument('--epochs', default=10000, type=int,
                         help='Number of epochs')
     parser.add_argument('--model', default='ae', type=str,
                         help='Model architecture.', choices=['ae', 'vae', 'vade'])
-    parser.add_argument('--patience', default=200, type=int,
+    parser.add_argument('--patience', default=100, type=int,
                         help='Patience for early stopping.')
     parser.add_argument("--outlier", type=str, default='none',
                         help="Class to be used as outlier.")

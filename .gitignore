@@ -6,3 +6,5 @@ data_raw/
 algorithms
 debugging
 preprocessing/notebooks/
+OCSVM/experiments/
+IForest/experiments/
