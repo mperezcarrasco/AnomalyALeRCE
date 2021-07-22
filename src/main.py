@@ -89,7 +89,7 @@ if __name__ == '__main__':
     # MODEL HIPERPARAMETERS
     parser.add_argument('--lr', default=1e-4, type=float,
                         help='Optimizer learning rate')
-    parser.add_argument('--z_dim', default=32, type=int,
+    parser.add_argument('--z_dim', default=128, type=int,
                         help='Latent space dimensionality')
     parser.add_argument('--in_dim', default=152, type=int,
                         help='Number of features in the input.')

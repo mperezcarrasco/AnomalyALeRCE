@@ -29,7 +29,7 @@ if __name__ == "__main__":
                         help="Hierarchical class to be used for the experiments.")
     parser.add_argument('--lr', default=1e-4, type=float,
                         help='Optimizer learning rate')
-    parser.add_argument('--z_dim', default=32, type=int,
+    parser.add_argument('--z_dim', default=128, type=int,
                         help='Latent space dimensionality')
     args = parser.parse_args()
     

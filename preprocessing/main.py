@@ -32,7 +32,8 @@ if __name__ == '__main__':
     labels = map_labels(labels)
     # Filter features accoding Sanches-Saez et al. 
     features = filter_features(features)
-
+    
+    features.rename(columns={'PPE':'Period_fit'}, inplace=True)
     merged_data = pd.merge(features, labels[['oid', 'classALeRCE', 'hierClass']], on='oid')
 
     # Defined train/test splits (80/20)% as defined in Sanchez-Saez et al.
