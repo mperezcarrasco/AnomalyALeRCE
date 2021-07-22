@@ -61,16 +61,21 @@ class vae(nn.Module):
         self.rec_m = AverageMeter()
         self.dkl_m = AverageMeter()
 
-    def compute_loss(self, x):
+    def compute_loss(self, x, L=10):
         """
         Compute Evidence Lower Bound (ELBO) for the variational autoencoder.
         """
-        #TODO: for a couple of forward passes.
         mu, log_var, _, x_hat = self.forward(x)
         self.rec = F.mse_loss(x_hat, x, reduction='mean')
-        self.dkl = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 \
-                                               - log_var.exp(), dim = 1), dim = 0)
-        self.loss = self.rec + self.dkl
+        self.dkl = torch.mean(-0.5 * (1 + log_var - mu ** 2 - log_var.exp()), dim=(1,0))
+
+        for i in range(L-1):
+            z = self.reparameterize(mu, log_var)
+            x_hat = self.decode(z)
+            self.rec += F.mse_loss(x_hat, x, reduction='mean')
+
+        self.rec/=L
+        self.loss =  self.rec + self.dkl
         return self.loss
 
     def compute_metrics(self, x):
