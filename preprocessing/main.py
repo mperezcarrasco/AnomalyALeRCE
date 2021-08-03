@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # TRAINING PAREMETERS
     parser.add_argument('--labels_file', default='../data_raw/dfcrossmatches_ZTF_prioritized_v8.0.1.csv', type=str,
                         help='Labels filename.')
-    parser.add_argument('--features_file', default='../data_raw/features_20210706_v2.parquet', type=str,
+    parser.add_argument('--features_file', default='../data_raw/features_20210719.parquet', type=str,
                         help='Features filename.')
     parser.add_argument('--features_list', default='../data_raw/features_RF_model.pkl', type=str,
                         help='Feature list (contains the features to be used for experiments.)')
@@ -63,7 +63,6 @@ if __name__ == '__main__':
         unlabeled['Periodic'] = probas[:,0]
         unlabeled['Stochastic'] = probas[:,1]
         unlabeled['Transient'] = probas[:,2]
-        test['hierPred'] = model.predict(test[feature_list].fillna(-999))
         unlabeled.to_pickle('../data/unlabeled_dataset_preds.pkl')
         pass
 

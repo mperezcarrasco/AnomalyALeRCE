@@ -27,11 +27,12 @@ if __name__ == "__main__":
                         help="Model to be used for the experiments.")
     parser.add_argument("--hierClass", type=str, default='Transient',
                         help="Hierarchical class to be used for the experiments.")
-    parser.add_argument('--lr', default=1e-4, type=float,
+    parser.add_argument('--lr', default=0.0005, type=float,
                         help='Optimizer learning rate')
     parser.add_argument('--z_dim', default=128, type=int,
                         help='Latent space dimensionality')
     args = parser.parse_args()
+    
     
     if args.hierClass=='Transient':
         possible_outliers = ['SLSN',
@@ -50,10 +51,9 @@ if __name__ == "__main__":
                              'E',
                              'RRL',
                              'LPV']
-    
     #outlier = 'none'
-    #lrs = [0.0005, 0.0001]
-    #z_dims = [32, 84, 128]
+    #lrs = [0.001 , 0.0005, 0.0001, 0.00005]
+    #z_dim = 128
     
     for outlier in possible_outliers:
         for fold in range(5):

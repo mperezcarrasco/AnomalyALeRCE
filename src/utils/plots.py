@@ -46,3 +46,13 @@ def plot_events(event):
     fig.tight_layout()
     fig.subplots_adjust(top=0.8)
     plt.show()
+    
+def plot_histogram(args, scores_in, scores_out):
+    plt.figure(figsize=(8,4))
+    plt.title('Inliers vs Outliers {}'.format(args.model), fontsize=16)
+    plt.hist(scores_in, label='Inliers', bins=25, density=True, histtype='step', color='b')
+    plt.hist(scores_out, label='Outliers', bins=25, density=True, histtype='step', color='r')
+    plt.legend(fontsize=14)
+    plt.savefig('{}/histogram.png'.format(args.directory))
+    plt.close()
+    

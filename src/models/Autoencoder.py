@@ -19,7 +19,7 @@ class ae(nn.Module):
         self.encbn2 = nn.BatchNorm1d(256)
         self.enc3 = nn.Linear(256, 128)
         self.encbn3 = nn.BatchNorm1d(128)
-        self.enc4 = nn.Linear(128, args.z_dim)
+        self.enc4 = nn.Linear(128, args.z_dim, bias=False)
 
         #Decoder Architecture
         self.dec1 = nn.Linear(args.z_dim, 128)
@@ -68,3 +68,11 @@ class ae(nn.Module):
         metrics = {'Loss': self.rec.avg,
                    'Reconstruction': self.rec.avg}
         return metrics
+    
+    def compute_anomaly_score(self, x):
+        """
+        Computing the anomaly score for each sample x.
+        """
+        _, x_hat = self.forward(x)
+        score = F.mse_loss(x_hat, x, reduction='none')
+        return torch.sum(score, dim=1)

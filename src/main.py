@@ -4,6 +4,7 @@ import os
 
 from preprocess import get_data
 from models.main import build_network
+from test import test
 from utils.utils import weights_init_normal, EarlyStopping, AverageMeter, save_metrics, print_and_log
 
 from torch.utils.tensorboard import SummaryWriter
@@ -113,3 +114,4 @@ if __name__ == '__main__':
 
     dataloader_train, dataloader_val, dataloader_test = get_data(args)
     train(args, writer, dataloader_train, dataloader_val)
+    #test(args, dataloader_test)

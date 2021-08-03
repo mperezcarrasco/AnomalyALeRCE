@@ -6,7 +6,10 @@ def weights_init_normal(m):
     classname = m.__class__.__name__
     if classname.find("Linear") != -1:
         torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
-        torch.nn.init.normal_(m.bias.data, 0.0, 0.02)
+        try:
+            torch.nn.init.normal_(m.bias.data, 0.0, 0.02)
+        except:
+            pass
 
 class EarlyStopping:
     """Early stopping as the convergence criterion.

@@ -21,8 +21,7 @@ def weighted_sampler(data, class_):
 def define_outlier_classes(args, data):
     #Define the type1 (wrong classified) and type2 (real unseen outlier) classes.
     outClasses = np.where((data['classALeRCE']!= args.outlier), 0, data['classALeRCE']) #Inlier:0
-    outClasses = np.where(data['hierClass']!=data['hierPredtmp'], 1, outClasses) #Type1:1
-    outClasses = np.where(data['classALeRCE']==args.outlier, 2, outClasses) #Type2:2
+    outClasses = np.where(data['classALeRCE']==args.outlier, 1, outClasses) #Outlier:1
     return outClasses
 
 def map2numerical(labels):
@@ -31,6 +30,23 @@ def map2numerical(labels):
     for i, class_ in enumerate(np.unique(labels)):
         labels_maped = np.where(labels==class_, i, labels_maped)
     return labels_maped.astype('int8')
+
+def sample_outliers(data, outlier):
+    outlier_proportion = data[data.classALeRCE==outlier].shape[0] / data.shape[0]
+    
+    if outlier_proportion > 0.1:
+        #Number of samples to remove.
+        n_rm = round(data[data.classALeRCE==outlier].shape[0] - data.shape[0] * 0.1)
+
+        df_subset = data[data.classALeRCE==outlier].sample(n_rm)
+        data = data.drop(df_subset.index)
+    else:
+        #Number of samples to remove.
+        n_rm  = round((data.shape[0] * 0.1 - data[data.classALeRCE==outlier].shape[0]) / 0.1)
+
+        df_subset = data[data.classALeRCE!=outlier].sample(n_rm)
+        data = data.drop(df_subset.index)
+    return data
 
 class ALeRCE(object):
     """ALeRCE Custom Dataloader.
@@ -80,17 +96,11 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
 
     #Select hierarchical class.
     train = train[train.hierClass==args.hierClass]
-    train['hierPredtmp'] = train['hierClass']
-
-    if args.outlier!='none':
-        test = test[test['hierPred_without_{}'.format(args.outlier)]==args.hierClass]
-        test['hierPredtmp'] = test['hierPred_without_{}'.format(args.outlier)]
-    else:
-        test = test[test['hierPred']==args.hierClass]
-        test['hierPredtmp'] = test['hierPred']
+    test = test[test.hierClass==args.hierClass]
 
     #Remove the outlier from training set and append it to the test set.
     test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
+    #test = sample_outliers(test, args.outlier)
     train = train[train.classALeRCE!=args.outlier]
 
     #Validation set.
@@ -101,8 +111,8 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
     #generating dataloaders
     trainALerCE = ALeRCE(args, train, feature_list)
     sampler = weighted_sampler(train, trainALerCE.classALeRCE)
-    dataloader_train = DataLoader(trainALerCE, batch_size=args.batch_size, sampler=sampler, num_workers=0)
-    dataloader_val = DataLoader(ALeRCE(args, val, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
-    dataloader_test = DataLoader(ALeRCE(args, test, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=0)
+    dataloader_train = DataLoader(trainALerCE, batch_size=args.batch_size, sampler=sampler, num_workers=16)
+    dataloader_val = DataLoader(ALeRCE(args, val, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=16)
+    dataloader_test = DataLoader(ALeRCE(args, test, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=16)
 
     return dataloader_train, dataloader_val, dataloader_test
