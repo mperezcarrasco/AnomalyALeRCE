@@ -5,7 +5,7 @@ import os
 from preprocess import get_data
 from models.main import build_network
 from test import test
-from utils.utils import weights_init_normal, EarlyStopping, AverageMeter, save_metrics, print_and_log
+from utils.utils import weights_init_normal, EarlyStopping, AverageMeter, save_metrics, print_and_log, pretrain_and_setC
 
 from torch.utils.tensorboard import SummaryWriter
 from torch import optim
@@ -14,7 +14,11 @@ from torch import optim
 def train(args, writer, dataloader_train, dataloader_val):
     """Train the unsupervised model."""
     model = build_network(args).to(args.device)
-    model.apply(weights_init_normal)
+    if args.model in ['deepsvdd', 'classvdd']:
+        model.eval()
+        model = pretrain_and_setC(args, model, dataloader_train)
+    else:
+        model.apply(weights_init_normal)
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
@@ -23,11 +27,15 @@ def train(args, writer, dataloader_train, dataloader_val):
     for epoch in range(args.epochs):
         model.set_metrics()
         print('Epoch: {}/{}'.format(epoch, args.epochs))
-        for _, x, _ , _ in dataloader_train:
+        for _, x, y_cl , _ in dataloader_train:
             model.train()
             x = x.float().to(args.device)
+            y_cl = y_cl.long().to(args.device)
 
-            loss = model.compute_loss(x)
+            if args.model in ['classvdd']:
+                loss = model.compute_loss(x, y_cl)
+            else:
+                loss = model.compute_loss(x)
             metrics = model.compute_metrics(x)
 
             #Computing gradients
@@ -46,7 +54,8 @@ def train(args, writer, dataloader_train, dataloader_val):
         stop, is_best = es.count(losses_v.avg, model)
 
         if is_best:
-            save_metrics(losses_v.avg, args.directory, mode='val')
+            save_metrics(metrics, args.directory, mode='train')
+            save_metrics(metrics_v, args.directory, mode='val')
         if stop:
             break
 
@@ -56,10 +65,13 @@ def evaluate(args, model, dataloader):
     model.set_metrics()
     losses = AverageMeter()
     with torch.no_grad():
-        for _, x, _, _ in dataloader:
+        for _, x, y_cl, _ in dataloader:
             x = x.float().to(args.device)
 
-            loss = model.compute_loss(x)
+            if args.model in ['classvdd']:
+                loss = model.compute_loss(x, y_cl)
+            else:
+                loss = model.compute_loss(x)
             metrics = model.compute_metrics(x)
 
             losses.update(loss.item(), x.size(0))
@@ -78,7 +90,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', default=10000, type=int,
                         help='Number of epochs')
     parser.add_argument('--model', default='ae', type=str,
-                        help='Model architecture.', choices=['ae', 'vae', 'vade'])
+                        help='Model architecture.', choices=['ae', 'vae', 'deepsvdd', 'classvdd'])
     parser.add_argument('--patience', default=100, type=int,
                         help='Patience for early stopping.')
     parser.add_argument("--outlier", type=str, default='none',

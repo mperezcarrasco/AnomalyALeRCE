@@ -70,3 +70,10 @@ def print_and_log(metrics, writer, epoch, mode):
         print("{}: {:.3f}".format(metric, value))
         writer.add_scalar('{}_{}'.format(metric, mode), value, epoch)
     return metrics
+
+def pretrain_and_setC(args, model, dataloader):
+    ae_dir = '{}/trained_parameters.pth'.format(args.directory).replace("deepsvdd", "ae")
+    state_dict = torch.load('{}/trained_parameters.pth'.format(ae_dir))
+    model.load_state_dict(state_dict)
+    model.set_c(dataloader)
+    return model
