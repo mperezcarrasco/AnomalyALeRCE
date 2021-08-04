@@ -89,3 +89,11 @@ class vae(nn.Module):
                    'Reconstruction': self.rec_m.avg,
                    'Divergence': self.dkl_m.avg}
         return metrics
+
+    def compute_anomaly_score(self, x):
+        """
+        Computing the anomaly score for each sample x.
+        """
+        _, _, _, x_hat = self.forward(x)
+        score = F.mse_loss(x_hat, x, reduction='none')
+        return torch.sum(score, dim=1)

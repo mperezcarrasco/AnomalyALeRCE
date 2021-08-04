@@ -5,26 +5,29 @@ import os
 from preprocess import get_data
 from models.main import build_network
 from utils.utils import save_metrics
-from utils.plots import plot_histogram
+from utils.plots import plot_histogram, plot_metrics, plot_event
 
+import numpy as np
 from sklearn.metrics import auc
 
-def compute_metrics(scores, labels):
+def compute_metrics(args, scores, labels):
     """
     Computing the Area under the curve ROC and PR.
     """
     in_scores = scores[labels==0]
     out_scores = scores[labels==1]
 
-    auroc, aupr = compute_roc_pr(in_scores, out_scores)
+    auroc, aupr = compute_roc_pr(args, in_scores, out_scores)
     metrics = {'AU ROC': auroc,
                'AU PR': aupr,
                }
     return metrics
 
-def compute_roc_pr(inliers_scores, outlier_scores):
-    auroc_score = auroc(inliers_scores, outlier_scores)
-    aupr_score = aupr(inliers_scores, outlier_scores)
+def compute_roc_pr(args, inliers_scores, outlier_scores):
+    auroc_score, fprs, tprs = auroc(inliers_scores, outlier_scores)
+    plot_metrics(args, 'AU ROC', auroc_score, fprs, tprs)
+    aupr_score, recalls, precisions = aupr(inliers_scores, outlier_scores)
+    plot_metrics(args, 'AU PR', aupr_score, recalls, precisions)
     return auroc_score, aupr_score
 
 def auroc(in_scores, out_scores):
@@ -40,7 +43,7 @@ def auroc(in_scores, out_scores):
         fpr = np.sum(np.sum(in_scores >= delta)) / np.float(len(in_scores))
         tprs.append(tpr)
         fprs.append(fpr)
-    return auc(fprs, tprs)
+    return auc(fprs, tprs), fprs, tprs
 
 def aupr(in_scores, out_scores):
     scores = np.concatenate((in_scores, out_scores), axis=0)
@@ -58,7 +61,7 @@ def aupr(in_scores, out_scores):
         recall = tp / np.float(len(out_scores))
         precisions.append(precision)
         recalls.append(recall)
-    return auc(recalls, precisions)
+    return auc(recalls, precisions), recalls, precisions
 
 def print_metrics(metrics):
     for metric, value in metrics.items():
@@ -82,15 +85,16 @@ def test(args, dataloader):
 
             score = model.compute_anomaly_score(x)
             scores.append(score.detach().cpu())
-            out_labels.append(out_label.cpu())
+            out_labels.append(y_out.cpu())
     
     scores = torch.cat(scores).numpy()
     out_labels = torch.cat(out_labels).numpy()
     
-    metrics = compute_metrics(scores, out_labels)
-    save_metrics(metrics, args.directory, 'test')
+    metrics = compute_metrics(args, scores, out_labels)
+    plot_histogram(args, scores[out_labels==0], scores[out_labels==1])
     print_metrics(metrics)
-    plot_histogram(args, scores[labels==0], scores[labels==1])
+    save_metrics(metrics, args.directory, 'test')
+    return metrics 
 
 
 if __name__ == '__main__':
@@ -133,7 +137,7 @@ if __name__ == '__main__':
     if not os.path.exists(args.directory):
         os.makedirs(args.directory)
 
-    writer = SummaryWriter(args.directory)
+    plot_event(args)
 
     _, _, dataloader_test = get_data(args)
     test(args, dataloader_test)

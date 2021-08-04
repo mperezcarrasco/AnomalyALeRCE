@@ -99,7 +99,6 @@ class HandcraftedFeaturePreprocessor(FeaturePreprocessor):
             scale = self.feature_scales[self.get_key_of_feature_scales(feature_name)]
             if self.should_use_log(feature_name):
                 if preprocessed_features[feature_name].min() <= 0.0:
-                    print(feature_name)
                 preprocessed_features[feature_name] = np.log(preprocessed_features[feature_name])
                 min_value = np.log(scale[0])
                 max_value = np.log(scale[1])
