@@ -100,7 +100,7 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
 
     #Remove the outlier from training set and append it to the test set.
     test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
-    #test = sample_outliers(test, args.outlier)
+    test = sample_outliers(test, args.outlier)
     train = train[train.classALeRCE!=args.outlier]
 
     #Validation set.
