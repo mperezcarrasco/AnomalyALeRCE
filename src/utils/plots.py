@@ -38,17 +38,18 @@ def plot_histogram(args, scores_in, scores_out):
     plt.close()
     
 def plot_metrics(args, metric_name, score, m1, m2):
-    ident=[0.0, 1.0]
     plt.title('{} curve. Score: {:.2f}'.format(metric_name, score), fontsize=20)
     plt.plot(m1, m2)
-    plt.plot(ident, ident, c='r')
     if metric_name=='AU ROC':
         m1_name = 'FPR'
         m2_name = 'TPR'
+        ident=[0.0, 1.0]
+        plt.plot(ident, ident, c='r')
     elif metric_name=='AU PR':
         m1_name = 'Recall'
         m2_name = 'Precision'
+        plt.plot([1.0, 0.0], [0.0, 1.0], c='r')
     plt.xlabel(m1_name, fontsize=18)
     plt.ylabel(m2_name, fontsize=18)
     plt.grid()
-    plt.savefig('{}/metric_name.png'.format(args.directory))
+    plt.savefig('{}/{}.png'.format(args.directory, metric_name))
