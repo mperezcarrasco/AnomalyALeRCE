@@ -43,7 +43,7 @@ class classvdd(nn.Module):
         for i in range(len(c)):
             c[i][(abs(c[i]) < eps) & (c[i] < 0)] = -eps
             c[i][(abs(c[i]) < eps) & (c[i] > 0)] = eps
-        self.c = c
+        self.c = c.to(self.args.device)
 
     def get_latent_space(self, dataloader):
         """Get the latent space and labels from the dataloader for the initialization."""

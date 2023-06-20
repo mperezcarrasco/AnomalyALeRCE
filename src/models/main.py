@@ -20,7 +20,7 @@ def build_network(args):
             model (torch.nn.Module): Network architecture.
     """
     # Checking if the network is implemented.
-    implemented_networks = ('ae', 'vae', 'vade', 'deepsvdd', 'classvdd')
+    implemented_networks = ('ae', 'vae', 'deepsvdd', 'classvdd')
     assert args.model in implemented_networks
 
     model = None
@@ -37,11 +37,11 @@ def build_network(args):
     elif args.model == 'deepsvdd':
         model = deepsvdd(args)
 
-    elif args.model == 'vade':
+    elif args.model == 'classvdd':
         model = classvdd(args)
 
-    if torch.cuda.is_available():
-        if torch.cuda.device_count() > 1:
-            model= torch.nn.DataParallel(model)
-        cudnn.benchmark = True
+    #if torch.cuda.is_available():
+    #    if torch.cuda.device_count() > 1:
+    #        model= torch.nn.DataParallel(model)
+    #    cudnn.benchmark = True
     return model

@@ -67,6 +67,7 @@ def evaluate(args, model, dataloader):
     with torch.no_grad():
         for _, x, y_cl, _ in dataloader:
             x = x.float().to(args.device)
+            y_cl = y_cl.long().to(args.device)
 
             if args.model in ['classvdd']:
                 loss = model.compute_loss(x, y_cl)
@@ -112,9 +113,9 @@ if __name__ == '__main__':
     args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     if args.outlier!='none':
-        job_name = '{}_{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.lr, args.z_dim, args.fold)
+        job_name = '{}_{}_{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.fold)
     else:
-        job_name = '{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.lr, args.z_dim, args.fold)
+        job_name = '{}_{}_fold{}'.format(args.model, args.hierClass, args.fold)
 
     args.directory = os.path.join(args.r, job_name)
 
@@ -126,4 +127,8 @@ if __name__ == '__main__':
 
     dataloader_train, dataloader_val, dataloader_test = get_data(args)
     train(args, writer, dataloader_train, dataloader_val)
-    #test(args, dataloader_test)
+    dataloader_train, _, dataloader_test = get_data(args)
+    if args.model in ['deepsvdd', 'classvdd']:
+        test(args, dataloader_test, dataloader_train)
+    else:
+        test(args, dataloader_test)

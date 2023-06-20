@@ -27,9 +27,11 @@ def define_outlier_classes(args, data):
 def map2numerical(labels):
     # Map string labels to numerical labels.
     labels_maped = labels
+    inv_map = dict()
     for i, class_ in enumerate(np.unique(labels)):
         labels_maped = np.where(labels==class_, i, labels_maped)
-    return labels_maped.astype('int8')
+        inv_map[i] = class_
+    return inv_map, labels_maped.astype('int8')
 
 def sample_outliers(data, outlier):
     outlier_proportion = data[data.classALeRCE==outlier].shape[0] / data.shape[0]
@@ -63,7 +65,7 @@ class ALeRCE(object):
         feature_preprocessor = HandcraftedFeaturePreprocessor()
         self.features = feature_preprocessor.preprocess(data[feature_list]).values
         self.oid = data.oid.values  
-        self.classALeRCE = map2numerical(data['classALeRCE'])
+        self.class_dict, self.classALeRCE = map2numerical(data['classALeRCE'])
         self.classOut = define_outlier_classes(args, data)
     
     def __len__(self):
@@ -99,8 +101,8 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
     test = test[test.hierClass==args.hierClass]
 
     #Remove the outlier from training set and append it to the test set.
-    test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
-    test = sample_outliers(test, args.outlier)
+    #test = pd.concat([test, train[train.classALeRCE==args.outlier]], sort=False)
+    #test = sample_outliers(test, args.outlier)
     train = train[train.classALeRCE!=args.outlier]
 
     #Validation set.
@@ -111,8 +113,14 @@ def get_data(args, feature_list_pth='../data_raw/features_RF_model.pkl'):
     #generating dataloaders
     trainALerCE = ALeRCE(args, train, feature_list)
     sampler = weighted_sampler(train, trainALerCE.classALeRCE)
-    dataloader_train = DataLoader(trainALerCE, batch_size=args.batch_size, sampler=sampler, num_workers=16)
-    dataloader_val = DataLoader(ALeRCE(args, val, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=16)
-    dataloader_test = DataLoader(ALeRCE(args, test, feature_list), batch_size=args.batch_size, shuffle=False, num_workers=16)
+    dataloader_train = DataLoader(trainALerCE, batch_size=args.batch_size, 
+                                  sampler=sampler, num_workers=16)
+    dataloader_val = DataLoader(ALeRCE(args, val, feature_list), 
+                                batch_size=args.batch_size, shuffle=False,
+                                num_workers=16)
+    test_load = ALeRCE(args, test, feature_list)
+    dataloader_test = DataLoader(test_load, batch_size=args.batch_size,
+                                 shuffle=False, num_workers=16)
+    print(test_load.class_dict)
 
     return dataloader_train, dataloader_val, dataloader_test

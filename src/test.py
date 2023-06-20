@@ -30,7 +30,7 @@ def compute_roc_pr(args, inliers_scores, outlier_scores):
     plot_metrics(args, 'AU PR', aupr_score, recalls, precisions)
     return auroc_score, aupr_score
 
-def auroc(in_scores, out_scores):
+def auroc(in_scores, out_scores, eps=1e-5):
     scores = np.concatenate((in_scores, out_scores), axis=0)
     start = np.min(scores)
     end = np.max(scores)   
@@ -39,13 +39,13 @@ def auroc(in_scores, out_scores):
     tprs = []
     fprs = []
     for delta in np.arange(end, start, -gap):
-        tpr = np.sum(np.sum(out_scores >= delta)) / np.float(len(out_scores))
-        fpr = np.sum(np.sum(in_scores >= delta)) / np.float(len(in_scores))
+        tpr = np.sum(np.sum(out_scores >= delta)) / (np.float(len(out_scores) + eps))
+        fpr = np.sum(np.sum(in_scores >= delta)) / (np.float(len(in_scores) + eps))
         tprs.append(tpr)
         fprs.append(fpr)
     return auc(fprs, tprs), fprs, tprs
 
-def aupr(in_scores, out_scores):
+def aupr(in_scores, out_scores, eps=1e-5):
     scores = np.concatenate((in_scores, out_scores), axis=0)
     start = np.min(scores)
     end = np.max(scores)   
@@ -57,8 +57,8 @@ def aupr(in_scores, out_scores):
         tp = np.sum(np.sum(out_scores >= delta)) #/ np.float(len(out_scores))
         fp = np.sum(np.sum(in_scores >= delta)) #/ np.float(len(in_scores))
         if tp + fp == 0: continue
-        precision = tp / (tp + fp)
-        recall = tp / np.float(len(out_scores))
+        precision = tp / (tp + fp + eps)
+        recall = tp / (np.float(len(out_scores))+eps)
         precisions.append(precision)
         recalls.append(recall)
     return auc(recalls, precisions), recalls, precisions
@@ -68,7 +68,7 @@ def print_metrics(metrics):
         print("{}: {:.3f}".format(metric, value))
     print("##########################################")
 
-def test(args, dataloader):
+def test(args, dataloader, dataloader_c=None):
     """Evaluting the anomaly detection model."""
     model = build_network(args).to(args.device)
     ### Loading the trained model...
@@ -79,6 +79,8 @@ def test(args, dataloader):
     out_labels = []
     
     model.eval()
+    if args.model in ['deepsvdd', 'classvdd']:
+        model.set_c(dataloader_c)
     with torch.no_grad():
         for _, x, _, y_out in dataloader:
             x = x.float().to(args.device)
@@ -127,7 +129,7 @@ if __name__ == '__main__':
     args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     if args.outlier!='none':
-        job_name = '{}_{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.lr, args.z_dim, args.fold)
+        job_name = '{}_{}_{}_fold{}'.format(args.model, args.hierClass, args.outlier, args.fold)
     else:
         job_name = '{}_{}_lr{}_ld{}_fold{}'.format(args.model, args.hierClass, args.lr, args.z_dim, args.fold)
 
@@ -139,5 +141,8 @@ if __name__ == '__main__':
 
     plot_event(args)
 
-    _, _, dataloader_test = get_data(args)
-    test(args, dataloader_test)
+    dataloader_train, _, dataloader_test = get_data(args)
+    if args.model in ['deepsvdd', 'classvdd']:
+        test(args, dataloader_test, dataloader_train)
+    else:
+        test(args, dataloader_test)

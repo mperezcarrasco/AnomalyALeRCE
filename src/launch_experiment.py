@@ -40,11 +40,12 @@ if __name__ == "__main__":
                              'SNIa',
                              'SNIbc']
     elif args.hierClass == 'Stochastic':
-        possible_outliers = [ 'AGN' ,
+        possible_outliers = ['QSO',
+                             'YSO',
+                             'AGN' ,
                              'Blazar',
                              'CV/Nova',
-                             'QSO',
-                             'YSO']
+                             ]
     elif args.hierClass == 'Periodic':
         possible_outliers = ['CEP',
                              'DSCT',

@@ -38,7 +38,7 @@ class deepsvdd(nn.Module):
         with torch.no_grad():
             for _, x, _, _ in dataloader:
                 x = x.float().to(self.args.device)
-                z = self.forwad(x)
+                z = self.forward(x)
                 zs.append(z.detach())
         zs = torch.cat(zs)
         c = torch.mean(zs, dim=0)
@@ -63,8 +63,8 @@ class deepsvdd(nn.Module):
         Compute metrics (only reconstruction for AE).
         """
         self.mse.update(self.loss.item(), x.size(0))
-        metrics = {'Loss': self.rec.avg,
-                   'Distance': self.rec.avg}
+        metrics = {'Loss': self.mse.avg,
+                   'Distance': self.mse.avg}
         return metrics
     
     def compute_anomaly_score(self, x):
