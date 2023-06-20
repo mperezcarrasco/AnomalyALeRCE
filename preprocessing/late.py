@@ -46,25 +46,4 @@ def train_bhrf(args, train, feature_list, save=False):
     if save:
         save_model(rf_model_hier)
 
-    if args.bottom_preds:
-        #Training the bottom levels of the classifier.
-        print('Training the bottom levels of the classifier.')
-        # Periodic
-        x_train_per, y_train_per = filter_class(x_train, y_train, y_train_hier, 'Periodic')
-        rf_model_per = build_bhrf()
-        rf_model_per.fit(x_train_per, y_train_per)
-
-        #Stochastic
-        x_train_st, y_train_st = filter_class(x_train, y_train, y_train_hier, 'Stochastic')
-        rf_model_st = build_bhrf()
-        rf_model_st.fit(x_train_st, y_train_st)
-
-        #Transient
-        x_train_tr, y_train_tr = filter_class(x_train, y_train, y_train_hier, 'Transient')
-        rf_model_tr = build_bhrf()
-        rf_model_tr.fit(x_train_tr, y_train_tr)
-
-        return rf_model_hier
-
-    else:
-        return rf_model_hier
+    return rf_model_hier

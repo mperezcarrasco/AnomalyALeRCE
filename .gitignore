@@ -1,10 +1,10 @@
 .ipynb_checkpoints/
-experiments/
+experiments/*
 __pycache__
-data/
-data_raw/
+data/*
+data_raw/*
 algorithms
 debugging
-preprocessing/notebooks/
+preprocessing/notebooks/*
 OCSVM/experiments/
 IForest/experiments/

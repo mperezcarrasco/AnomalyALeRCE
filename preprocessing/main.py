@@ -19,9 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--features_list', default='../data_raw/features_RF_model.pkl', type=str,
                         help='Feature list (contains the features to be used for experiments.)')
     parser.add_argument('--train_late', action='store_true',
-                        help='If late classifier need to be trained.')
-    parser.add_argument('--bottom_preds', action='store_true',
-                        help='If predictions on the bottom level have to be made.')
+                        help='If late classifier need to be trained. Use only if the BHRF needs to be trained.')
     args = parser.parse_args()
 
     features = pd.read_parquet(args.features_file, engine='pyarrow')
@@ -48,11 +46,11 @@ if __name__ == '__main__':
                     f,
                     pickle.HIGHEST_PROTOCOL)
 
-    # Saving train/test splits using Sanchez-Saez filtering criterion.
-    test.to_pickle('../data/test_data.pkl')
+    # Saving train data according to Sanchez-Saez filtering criterion.
     train.to_pickle('../data/train_data.pkl')  
 
     if args.train_late:
+        print("Retraining late classifier...")
         model = train_bhrf(args, train, feature_list, save=True)
         unlabeled = features[~features.index.isin(train.oid)] #removing training set from unlabeled data
         x = unlabeled[feature_list].astype('float32')
@@ -84,8 +82,9 @@ if __name__ == '__main__':
     
     test['hierPred'] = model.predict(test[feature_list].fillna(-999))
     temp_test = test[feature_list]
+    # Making predictions removing the outlier class from the dataset and training a late classifier.
     for outlier in possible_outliers:
-        args.bottom_preds = False #In this stage we are only interested in top level.
+        print('Training bhrf models removing the class {}'.format(outlier))
         temp_train = train[(train['classALeRCE']!=outlier)] #training data without outlier.
         model = train_bhrf(args, temp_train, feature_list)
 
@@ -94,13 +93,13 @@ if __name__ == '__main__':
         hier_pred = model.predict(temp_test)
 
         test['hierPred_without_{}'.format(outlier)] = hier_pred
-        test.to_pickle('../data/test_data.pkl')
+        test.to_pickle('../data/test_data.pkl') #Saving test data according to Sanchez-Saez filtering criterion.
 
     #NEW FILTER! only curves r and g >= 6 + FLAGS.
     train = train[(train['n_det_1']>=6) & (train['n_det_2']>=6)]
     test = test[(test['n_det_1']>=6) & (test['n_det_2']>=6)]
 
-    # Removing FLAGS discusses in ALeRCE's meetings.
+    # Using FLAGS to remove objects as discussed in ALeRCE's meetings.
     train = flag_data(train)
     test = flag_data(test)
     train.to_pickle('../data/train_data_filtered.pkl')
