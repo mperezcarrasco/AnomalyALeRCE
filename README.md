@@ -21,4 +21,4 @@ To reproduce paper results, download the folder [data](https://drive.google.com/
 
 `python3 launch_experiment.py --model --hierClass --lr --z_dim`
 
-Models available are Autoencoder (ae), Variational Autoencoder (vae), Deep Suppor Vector Data Description (deepsvdd) and our proposed method Multi-Class Deep SVDD (classvdd).
+Models (`--model`) available are Autoencoder (`ae`), Variational Autoencoder (`vae`), Deep Support Vector Data Description (`deepsvdd`) and our proposed method Multi-Class Deep SVDD (`classvdd`). Hierarchical classes (`--hierClass`) available are [`Transient`, `Stchastic`, `Periodic`].
