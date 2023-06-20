@@ -1,8 +1,6 @@
 .ipynb_checkpoints/
 experiments/*
 __pycache__
-data/*
-data_raw/*
 algorithms
 debugging
 preprocessing/notebooks/*
