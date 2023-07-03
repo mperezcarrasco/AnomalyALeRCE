@@ -71,9 +71,46 @@ def print_and_log(metrics, writer, epoch, mode):
         writer.add_scalar('{}_{}'.format(metric, mode), value, epoch)
     return metrics
 
-def pretrain_and_setC(args, model, dataloader):
-    ae_dir = '{}/trained_parameters.pth'.format(args.directory).replace("deepsvdd", "ae")
-    state_dict = torch.load('{}/trained_parameters.pth'.format(ae_dir))
-    model.load_state_dict(state_dict)
+def print_progress(epoch, num_epochs, mode, writer, metrics):
+    bar_length = 20
+    progress = float(epoch) / num_epochs
+    block = int(round(bar_length * progress))
+
+    str_metrics = []
+    for metric, value in metrics.items(): 
+        str_metrics.append(f"{mode} {metric}: {value:.3f}")
+        writer.add_scalar('{}_{}'.format(metric, mode), value, epoch)
+
+    if mode == 'Val': text=' '
+    else: text = f"\rEpoch [{epoch}/{num_epochs}] [{'=' * block}{'.' * (bar_length - block)}]"
+    
+    for i in str_metrics:
+        text += f" {i} "
+    print(text, end='')
+
+    return metrics
+
+
+def pretrain_and_setC(args, model, dataloader):  
+
+    
+    if args.directory.find('deepsvdd') > 0:
+        ae_dir = '{}'.format(args.directory).replace("deepsvdd", "ae")  
+    else: 
+        ae_dir = '{}'.format(args.directory).replace("classvdd", "ae")
+    print(ae_dir)
+
+
+    state_dict = torch.load('{}/trained_parameters.pth'.format(ae_dir)) #pret
+    model.load_state_dict(state_dict, strict=False)
     model.set_c(dataloader)
+#    model_dict = model.state_dict()
+
+#    state_dict = {k: v for k, v in state_dict.items() if k in model_dict}
+#    model_dict.update(state_dict)
+
+#    model.load_state_dict(state_dict)
+#    model.set_c(dataloader)
+    
+    
     return model

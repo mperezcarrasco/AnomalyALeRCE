@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from utils.norm_scales import feature_scales, use_log, use_clip_and_log
+from src.utils.norm_scales import feature_scales, use_log, use_clip_and_log
 from sklearn.preprocessing import QuantileTransformer
 from abc import ABC, abstractmethod
 
@@ -99,9 +99,9 @@ class HandcraftedFeaturePreprocessor(FeaturePreprocessor):
             scale = self.feature_scales[self.get_key_of_feature_scales(feature_name)]
             if self.should_use_log(feature_name):
                 if preprocessed_features[feature_name].min() <= 0.0:
-                preprocessed_features[feature_name] = np.log(preprocessed_features[feature_name])
-                min_value = np.log(scale[0])
-                max_value = np.log(scale[1])
+                    preprocessed_features[feature_name] = np.log(preprocessed_features[feature_name])
+                    min_value = np.log(scale[0])
+                    max_value = np.log(scale[1])
             elif self.should_use_clip_and_log(feature_name):
                 preprocessed_features[feature_name] = np.clip(
                     preprocessed_features[feature_name],

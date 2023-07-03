@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from utils.utils import AverageMeter
+from src.utils.utils import AverageMeter
 import numpy as np
 
 class classvdd(nn.Module):
