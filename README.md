@@ -1,7 +1,7 @@
 
  
 <p align="center">
-  <img  src="../presentation/images/anomaly_logo.png" alt="ALeRCE AD logo" width="100%">
+  <img  src="./presentation/images/anomaly_logo.png" alt="ALeRCE AD logo" width="100%">
 </p>
 
 
@@ -26,7 +26,7 @@ We provide a Machine and Deep Learning-based framework for anomaly detection. Ou
 <details open><summary>Pipeline</summary>
 
 <p align="center">
-  <img  src="../presentation/images/pipeline.png" alt="ALeRCE taxonomy" width="100%">
+  <img  src="./presentation/images/pipeline.png" alt="ALeRCE pipeline" width="100%">
 </p>
 
 **Figure 1.** Methodology for training and evaluation of the anomaly detection algorithms. We split the data into a training set and test set composed by 80% and 20% of the data, respectively The training set is subdivided into transient stochastic, and periodic data. For each of these classes, we choose each subclass as the outlier class. The outlier class is removed from the training set and added to the test set (TS2). Then, an anomaly detection algorithm is trained using the remaining objects of each of the classes, and is evaluated using TS2.
