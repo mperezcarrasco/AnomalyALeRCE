@@ -227,6 +227,7 @@ As shown in Table 1, the best performance was achieved for transient and periodi
  ┣ 📜 run_container.sh: script to run the Anomaly Detector Docker image (up container)
  ┣ 📜 Dockerfile: Docker image definition
  ┣ 📜 requirements.txt: python dependencies
+ ┣ 📜 main.py: code for running the models
  ┗ 📜 README.md: what you are currently reading
  ```
 
@@ -266,7 +267,7 @@ Finally, **if you do not want to use Docker** the `requirements.txt` file contai
 * Some more packages see `requirements.txt`
 
 ## Reproducibility
-For reproducibility of our reported results run, we provide a script (`presentation/experiments/launch_experiments.bash`) that can be used to run all the models at once. To preprocess the data used in the paper, download the data following the next steps.  
+For reproducibility of our reported results run, we provide a script (`presentation/experiments/launch_experiments.bash`) that can be used to run all the models at once. It is important to note that this script includes the learning rate and embedding dimensions that were used in the paper. Additionally, the order in which the experiments are run is crucial, as the DEEPSVDD and MCDSVDD models rely on the pretrained weights of the AE model. To preprocess the data used in the paper, download the data following the next steps.  
 
 ```
 src data
@@ -275,36 +276,37 @@ src data
 ```
 bash get_data.sh ztf-processed
 ```
-
-## Using your own data 
-
+To use your own ALeRCE's ZTF data, you should first run (`src/preprocessing/main.py`). Following the steps below:
 
 ```
-cd preprocess
+cd src/preprocess
 ```
 
 
 ```
-python3 main.py --labels_file --features_file --features_list
+python3 main.py --labels_file 'your_path1' --features_file  'your_path2' --features_list  'your_path3'
 ```
 
 
 ### Train models
 
-To reproduce paper results, download the folder [data](https://drive.google.com/drive/folders/1z4qdQI60V82AmlwS_1Yxlqb1Vv1w04bB?usp=sharing). 
+If you want to train a model with your own data subsets, we provide a script (`main.py`) where you can run models as:
 
 ```
-cd src
+python3 main.py --model ae --hierClass Transient --outlier YSO  --all_outliers False --lr 5e-4 --z_dim 32
+```
+In the given case, the outlier class corresponds to the transient YSO. If you want to detect all possible outliers within the Transient hierarchical class, you should set the parameter (`--all_outliers`) to true.
+
+```
+python3 main.py --model ae --hierClass Transient --all_outliers True --lr 5e-4 --z_dim 32
 ```
 
 
-```
-python3 launch_experiment.py --model --hierClass --lr --z_dim
-```
+Models (`--model`) available are Autoencoder (`ae`), Variational Autoencoder (`vae`), IForest (`iforest`), OCSVM (`ocsvm`), Deep Support Vector Data Description (`deepsvdd`) and our proposed method Multi-Class Deep SVDD (`classvdd`). Hierarchical classes (`--hierClass`) available are [`Transient`, `Stchastic`, `Periodic`].
 
-Models (`--model`) available are Autoencoder (`ae`), Variational Autoencoder (`vae`), Deep Support Vector Data Description (`deepsvdd`) and our proposed method Multi-Class Deep SVDD (`classvdd`). Hierarchical classes (`--hierClass`) available are [`Transient`, `Stchastic`, `Periodic`].
 
 ## Contributing 🤝
+
 Contributions are always welcome!
 
 
