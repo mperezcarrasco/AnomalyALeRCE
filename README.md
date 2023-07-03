@@ -37,18 +37,6 @@ We provide a Machine and Deep Learning-based framework for anomaly detection. Ou
 
 See the notebooks (`/presentation/notebooks/*`) for usage examples with these models.
 
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-jmd0{border-color:inherit;font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;font-weight:bold;
-  text-align:center;vertical-align:top}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-.tg .tg-yvi3{border-color:inherit;font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;text-align:center;
-  vertical-align:top}
-</style>
 <table class="tg">
 <thead>
   <tr>
