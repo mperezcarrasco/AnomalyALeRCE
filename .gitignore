@@ -1,9 +1,4 @@
 .gitignore
 .ipynb_checkpoints/
 experiments/*
-__pycache__
-algorithms
-debugging
-preprocessing/notebooks/*
-OCSVM/experiments/
-IForest/experiments/
+presentation/notebooks/*
