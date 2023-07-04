@@ -1,6 +1,6 @@
+
 import pandas as pd
 import numpy as np
-
 
 def map_labels(labels):
     """mapping labels to the ALeRCE's taxonomy.

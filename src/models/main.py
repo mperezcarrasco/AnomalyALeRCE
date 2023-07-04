@@ -1,8 +1,8 @@
-from models.Autoencoder import ae
-from models.VariationalAutoencoder import vae
-from models.VaDE import vade
-from models.DeepSVDD import deepsvdd
-from models.ClasSVDD import classvdd
+from src.models.Autoencoder import ae
+from src.models.VariationalAutoencoder import vae
+from src.models.VaDE import vade
+from src.models.DeepSVDD import deepsvdd
+from src.models.ClasSVDD import classvdd
 
 
 
