@@ -187,7 +187,7 @@ As shown in Table 1, the best performance was achieved for transient and periodi
 -  A new scheme of training and evaluation methodology
 -  Validated framework in a real-world scenario by selecting the 10 sources with the highest outlier score per each of the 15 classes predicted by the ALeRCE light curve classifier (`presentation/notebooks/Results analysis.ipynb`)
 - Methods trained using the ZTF alert stream and benefit from the ALeRCE LC classifier 
-- Predefined experiments to reproduce publication results (`presentation/experiments/*`)
+- Predefined experiments to reproduce publication results (`presentation/notebooks/*`)
 - Data preprocessing, saving and reading (`/src/preprocessing/*`)
 - Dockerfile and scripts for building (`build_container.sh`) and run (`run_container.sh`) the Anomaly Detector container
 
