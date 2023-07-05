@@ -1,6 +1,5 @@
 .gitignore
 .ipynb_checkpoints/
-experiments/*
 __pycache__
 algorithms
 debugging
