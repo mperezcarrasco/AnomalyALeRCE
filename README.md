@@ -12,7 +12,7 @@ Welcome to the **ALeRCE anomaly detector** framework. This is the main repositor
 Our methodology has been published and is available through the [ALeRCE Broker](https://alerce.science/), a Chilean-led platform that processes the alert stream from the Zwicky Transient Facility (ZTF).
 
 
-In our work we look for the best outliers detection algorithms that aim to find transient, periodic and stochastic  anomalous sources within the ZTF data stream. The **ALeRCE anomaly detector** framework consists of crossvalidating **six anomaly detection algorithms** for each of these three classes using the ALeRCE light curve features.
+In our work we look for the most promising outlier detection algorithms that aim to find transient, periodic and stochastic  anomalous sources within the ZTF data stream. The **ALeRCE anomaly detector** framework consists of crossvalidating **six anomaly detection algorithms** for each of these three classes using the ALeRCE light curve features.
 
 
 Following the ALeRCE taxonomy, we consider four transient subclasses, five stochastic subclasses, and five periodic subclasses. We evaluate each algorithm by considering each subclass as the anomaly class.
