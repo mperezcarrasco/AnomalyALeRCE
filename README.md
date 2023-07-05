@@ -231,7 +231,7 @@ As shown in Table 1, the best performance was achieved for transient and periodi
  ```
 
 ## Setup the enviroment
-The easiest way to reproduce our results is to set up an environment by using [Docker](https://www.docker.com/). Docker provides the ability to package and run an application in a loosely isolated environment called a container. We create a a container identical to the one used by us to perform our experiments.
+The easiest way to reproduce our results is to set up an environment by using [Docker](https://www.docker.com/). Docker provides the ability to package and run an application in a loosely isolated environment called a container. We create a a container identical to the one used to perform the experiments.
 
 Install Docker by following the instructions [here](https://docs.docker.com/get-docker/).
 
