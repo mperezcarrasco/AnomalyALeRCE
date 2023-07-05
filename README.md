@@ -235,7 +235,7 @@ The easiest way to reproduce our results is to set up an environment by using [D
 
 Install Docker by following the instructions [here](https://docs.docker.com/get-docker/).
 
-The `Dockerfile` contains all the configurations required to run the Anomaly Detector framework. You don't need to modify it directly. Instead, use the provided scripts build_container.sh and run_container.sh to handle the container setup for you.
+The `Dockerfile` contains all the configurations required to run the container for the Anomaly Detector framework. You don't need to modify it directly. Instead, use the provided scripts build_container.sh and run_container.sh to handle the container setup for you.
 
 ### Building the container
 To build the container, run the following command:
@@ -253,7 +253,7 @@ To run the Anomaly Detector container, use the following command:
   bash run_container.sh
 ```
 
-This script automatically finds the anomalydetector container and runs it on top of your kernel. If GPUs are available, the script makes them visible inside the container.
+This script automatically finds the `anomalydetector` container and runs it on top of your kernel. If GPUs are available, the script makes them visible inside the container.
 
 By default, the `run_container.sh` script opens ports `8888` and `6006` for Jupyter Notebook and TensorBoard, respectively. To access them, use the following commands:
 
@@ -265,6 +265,8 @@ jupyter notebook --ip 0.0.0.0
 ```
 tensorboard --logdir <my-logs-folder> --host 0.0.0.0
 ```
+
+###Setup locally
 If you prefer not to use Docker, you can install the required packages locally. The `requirements.txt` file contains all the necessary dependencies. To install them, use the following command in your local Python environment:
 
 ```
@@ -286,7 +288,8 @@ src data
 ```
 bash get_data.sh ztf-processed
 ```
-To use your own ALeRCE's ZTF data, you should first run (`src/preprocessing/main.py`). Following the steps below:
+
+### To use your own ALeRCE's ZTF data, you should first run (`src/preprocessing/main.py`). Following the steps below:
 
 ```
 cd src/preprocess
