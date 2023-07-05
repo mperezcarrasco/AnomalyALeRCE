@@ -231,39 +231,50 @@ As shown in Table 1, the best performance was achieved for transient and periodi
  ```
 
 ## Setup the enviroment
-The easiest way to setup the environment is by using [Docker](https://docs.docker.com/get-docker/), since it provides a **kernel-isolated** and **identical environment** to the one used by the authors. 
+The easiest way to reproduce our results is to set up an environment by using [Docker](https://www.docker.com/). Docker provides the ability to package and run an application in a loosely isolated environment called a container. We create a a container identical to the one used by us to perform our experiments.
 
-The `Dockerfile` contains all the configuration for running the Anomaly Detector framework. No need to touch it, `build_container.sh` and `run_container.sh` make the work for you.
+Install Docker by following the instructions [here](https://docs.docker.com/get-docker/).
 
+The `Dockerfile` contains all the configurations required to run the Anomaly Detector framework. You don't need to modify it directly. Instead, use the provided scripts build_container.sh and run_container.sh to handle the container setup for you.
 
-The first step is to build the container,
-```bash
+### Building the container
+To build the container, run the following command:
+```
   bash build_container.sh
 ```
-It creates a "virtual machine", named `anomalydetector`, containing all the dependencies such as python, tensorflow, among others. 
 
-The next and final step is running the Anomaly Detector container,
+This command creates a virtual machine named `anomalydetector` that includes all the necessary dependencies, such as Python, PyTorch, and others.
+
+
+### Running the Container
+To run the Anomaly Detector container, use the following command:
+
 ```
   bash run_container.sh
 ```
-The above script looks for the container named `anomalydetector` and run it on top of [your kernel](https://www.techtarget.com/searchdatacenter/definition/kernel#:~:text=The%20kernel%20is%20the%20essentialsystems%2C%20device%20control%20and%20networking.). Automatically, the script recognizes if there are GPUs, making them visible inside the container.
 
-By default the `run_container.sh` script opens the ports `8888` and `6006` for **jupyter notebook** and [**tensorboard**](https://github.com/cridonoso/tensorboard_tutorials), resepectively. To run them, use the usal commands but adding the following lines:
+This script automatically finds the anomalydetector container and runs it on top of your kernel. If GPUs are available, the script makes them visible inside the container.
 
-For Jupyter Notebook 
+By default, the `run_container.sh` script opens ports `8888` and `6006` for Jupyter Notebook and TensorBoard, respectively. To access them, use the following commands:
+
+###For Jupyter Notebook 
 ```
 jupyter notebook --ip 0.0.0.0
 ```
-For Tensorboard
+###For TensorBoard
 ```
 tensorboard --logdir <my-logs-folder> --host 0.0.0.0
 ```
-Finally, **if you do not want to use Docker** the `requirements.txt` file contains all the packages needed to run our methods. Use `pip install -r requirements.txt` on your local python to install them.
+If you prefer not to use Docker, you can install the required packages locally. The `requirements.txt` file contains all the necessary dependencies. To install them, use the following command in your local Python environment:
+
+```
+pip install -r requirements.txt
+```
 
 ### Dependencies 
 * Python == 3.8.10
 * Torch == 2.0.1
-* Some more packages see `requirements.txt`
+* Other packages (see `requirements.txt` for details).
 
 ## Reproducibility
 For reproducibility of our reported results run, we provide a script (`presentation/experiments/launch_experiments.bash`) that can be used to run all the models at once. It is important to note that this script includes the learning rate and embedding dimensions that were used in the paper. Additionally, the order in which the experiments are run is crucial, as the DEEPSVDD and MCDSVDD models rely on the pretrained weights of the AE model. To preprocess the data used in the paper, download the data following the next steps.  
