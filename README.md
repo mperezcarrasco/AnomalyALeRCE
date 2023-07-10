@@ -257,16 +257,16 @@ This script automatically finds the `anomalydetector` container and runs it on t
 
 By default, the `run_container.sh` script opens ports `8888` and `6006` for Jupyter Notebook and TensorBoard, respectively. To access them, use the following commands:
 
-###For Jupyter Notebook 
+### For Jupyter Notebook 
 ```
 jupyter notebook --ip 0.0.0.0
 ```
-###For TensorBoard
+### For TensorBoard
 ```
 tensorboard --logdir <my-logs-folder> --host 0.0.0.0
 ```
 
-###Setup locally
+### Setup locally
 If you prefer not to use Docker, you can install the required packages locally. The `requirements.txt` file contains all the necessary dependencies. To install them, use the following command in your local Python environment:
 
 ```
