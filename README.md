@@ -326,7 +326,7 @@ Contributions are always welcome!
 Issues and featuring can be directly published in this repository via [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). Look at [this tutorial](https://cridonoso.github.io/articles/github.html) for more information about pull requests.
 
 
-## Cite us
+## Cite us
 
 
 ```
