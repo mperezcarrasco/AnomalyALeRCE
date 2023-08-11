@@ -7,7 +7,7 @@
 
 ## Anomaly Detector for ALeRCE broker
 
-Welcome to the **ALeRCE anomaly detector** framework. This is the main repository where you can find all the resources associated to our article:  [Alert Classification for the ALeRCE Broker System: The Anomaly Detector]([https://alerce.science/](https://arxiv.org/abs/2308.05011)).
+Welcome to the **ALeRCE anomaly detector** framework. This is the main repository where you can find all the resources associated to our article:  [Alert Classification for the ALeRCE Broker System: The Anomaly Detector]([https://arxiv.org/abs/2308.05011]).
 
 Our methodology has been published and is available through the [ALeRCE Broker](https://alerce.science/), a Chilean-led platform that processes the alert stream from the Zwicky Transient Facility (ZTF).
 
@@ -326,6 +326,7 @@ Contributions are always welcome!
 Issues and featuring can be directly published in this repository via [Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests). Look at [this tutorial](https://cridonoso.github.io/articles/github.html) for more information about pull requests.
 
 ## Cite us
+
 ```
 @misc{pérezcarrasco2023multiclass,
       title={Multi-Class Deep SVDD: Anomaly Detection Approach in Astronomy with Distinct Inlier Categories}, 
