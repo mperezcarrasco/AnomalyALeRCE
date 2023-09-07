@@ -343,10 +343,8 @@ author = {Manuel Perez-Carrasco and Guillermo Cabrera-Vives and Lorena Hernandez
 title = {Alert Classification for the ALeRCE Broker System: The Anomaly Detector},
 journal = {The Astronomical Journal},
 abstract = {Astronomical broker systems, such as Automatic Learning for the Rapid Classification of Events (ALeRCE), are currently analyzing hundreds of thousands of alerts per night, opening up an opportunity to automatically detect anomalous unknown sources. In this work, we present the ALeRCE anomaly detector, composed of three outlier detection algorithms that aim to find transient, periodic, and stochastic anomalous sources within the Zwicky Transient Facility data stream. Our experimental framework consists of cross-validating six anomaly detection algorithms for each of these three classes using the ALeRCE light-curve features. Following the ALeRCE taxonomy, we consider four transient subclasses, five stochastic subclasses, and six periodic subclasses. We evaluate each algorithm by considering each subclass as the anomaly class. For transient and periodic sources the best performance is obtained by a modified version of the deep support vector data description neural network, while for stochastic sources the best results are obtained by calculating the reconstruction error of an autoencoder neural network. Including a visual inspection step for the 10 most promising candidates for each of the 15 ALeRCE subclasses, we detect 31 bogus candidates (i.e., those with photometry or processing issues) and seven potential astrophysical outliers that require follow-up observations for further analysis.}
-}
       year={2023},
       eprint={2308.05011},
       archivePrefix={arXiv},
-      primaryClass={cs.LG}
+      primaryClass={cs.LG}}
 ```
-}
