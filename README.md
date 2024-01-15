@@ -7,7 +7,7 @@
 
 ## Anomaly Detector for ALeRCE broker
 
-Welcome to the **ALeRCE anomaly detector** framework. This is the main repository where you can find all the resources associated to our article:  [Alert Classification for the ALeRCE Broker System: The Anomaly Detector](https://arxiv.org/abs/2308.05011).
+Welcome to the **ALeRCE anomaly detector** framework. This is the main repository where you can find all the resources associated to our article:  [Alert Classification for the ALeRCE Broker System: The Anomaly Detector](https://iopscience.iop.org/article/10.3847/1538-3881/ace0c1).
 
 Our methodology has been published and is available through the [ALeRCE Broker](https://alerce.science/), a Chilean-led platform that processes the alert stream from the Zwicky Transient Facility (ZTF).
 
